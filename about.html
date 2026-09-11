@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>福岡美食相對位置地圖</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800;900&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'M PLUS Rounded 1c', 'Noto Sans TC', sans-serif;
+    }
+    body {
+      background-color: #f8fafc;
+      margin: 0;
+      padding: 12px;
+      color: #334155;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding-bottom: 40px;
+    }
+
+    /* 頂部導覽列 */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 4px 0;
+    }
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      background: #ffffff;
+      color: #a8000b;
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      border: 2px solid #ffcdd2;
+    }
+    h1 {
+      font-size: 1.2rem;
+      margin: 0;
+      color: #a8000b;
+      font-weight: 900;
+    }
+
+    /* 相對位置示意圖區塊 */
+    .map-card {
+      background: white;
+      padding: 10px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      text-align: center;
+      margin-bottom: 20px;
+      border: 2px solid #ffffff;
+    }
+    .map-img {
+      width: 100%;
+      border-radius: 10px;
+      object-fit: cover;
+      cursor: pointer;
+      display: block;
+    }
+    .map-hint {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 8px;
+      font-weight: 700;
+    }
+
+    /* 區域標題 */
+    .area-header {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: #1e293b;
+      margin: 20px 0 10px 0;
+      padding-left: 8px;
+      border-left: 4px solid #a8000b;
+      display: flex;
+      align-items: center;
+    }
+
+    /* 美食卡片 */
+    .food-card {
+      background: white;
+      padding: 12px 14px;
+      border-radius: 14px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #f1f5f9;
+    }
+    .food-info {
+      flex: 1;
+      padding-right: 10px;
+    }
+    .food-title {
+      font-size: 0.95rem;
+      font-weight: 900;
+      color: #0f172a;
+    }
+    .food-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      background: #ffe4e6;
+      color: #e11d48;
+      padding: 2px 6px;
+      border-radius: 6px;
+      margin-top: 3px;
+      font-weight: 800;
+    }
+    .food-desc {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 4px;
+      line-height: 1.35;
+      font-weight: 500;
+    }
+    .btn-map {
+      background: #2563eb;
+      color: white;
+      text-decoration: none;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      white-space: nowrap;
+      box-shadow: 0 2px 5px rgba(37,99,235,0.25);
+    }
+
+    /* 燈箱全螢幕圖片 */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 12px;
+    }
+    .modal img {
+      max-width: 100%;
+      max-height: 85vh;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- 頂部列：返回主頁按鈕 -->
+  <header>
+    <a href="index.html" class="btn-back">⬅ 返回行程頁</a>
+    <h1>📍 福岡美食相對地圖</h1>
+  </header>
+
+  <!-- 相對位置示意圖區塊 (預設讀取 01.jpg) -->
+  <div class="map-card">
+    <img src="01.jpg" alt="美食相對位置圖" class="map-img" onclick="openLightbox(this.src)">
+    <div class="map-hint">💡 點擊上圖可放大查看區域相對位置</div>
+  </div>
+
+  <!-- 博多車站區域 -->
+  <div class="area-header">博多車站周邊</div>
+
+  <div class="food-card">
+    <div class="food-info">
+      <div class="food-title">Shin-Shin 博多拉麵 (KITTE店)</div>
+      <span class="food-tag">豚骨拉麵</span>
+      <div class="food-desc">KITTE 博多 B1，博多車站筑紫口/博多口步行 2 分鐘。</div>
+    </div>
+    <a href="https://maps.google.com/?q=Shin-Shin拉麵KITTE博多" target="_blank" class="btn-map">地圖 🗺️</a>
+  </div>
+
+  <div class="food-card">
+    <div class="food-info">
+      <div class="food-title">極味屋 (博多店)</div>
+      <span class="food-tag">石燒和牛漢堡排</span>
+      <div class="food-desc">博多公車轉運站 1 樓，排隊名店。</div>
+    </div>
+    <a href="https://maps.google.com/?q=極味屋博多店" target="_blank" class="btn-map">地圖 🗺️</a>
+  </div>
+
+  <!-- 天神 / PARCO 區域 -->
+  <div class="area-header">天神 / PARCO 區域</div>
+
+  <div class="food-card">
+    <div class="food-info">
+      <div class="food-title">麵屋兼虎 (福岡PARCO店)</div>
+      <span class="food-tag">濃郁沾麵</span>
+      <div class="food-desc">福岡 PARCO 本館 B2，地鐵天神站直通。</div>
+    </div>
+    <a href="https://maps.google.com/?q=麵屋兼虎福岡PARCO" target="_blank" class="btn-map">地圖 🗺️</a>
+  </div>
+
+  <div class="food-card">
+    <div class="food-info">
+      <div class="food-title">焼肉ホルモン山翔</div>
+      <span class="food-tag">燒肉 / 內臟燒肉</span>
+      <div class="food-desc">天神商圈周邊，近春吉/中洲區域。</div>
+    </div>
+    <a href="https://maps.google.com/?q=焼肉ホルモン山翔" target="_blank" class="btn-map">地圖 🗺️</a>
+  </div>
+
+  <!-- 小倉區域 -->
+  <div class="area-header">小倉區域</div>
+
+  <div class="food-card">
+    <div class="food-info">
+      <div class="food-title">辻利茶舗 (京町本店)</div>
+      <span class="food-tag">抹茶甜點</span>
+      <div class="food-desc">小倉中央商店街內，小倉站步行 5 分鐘。</div>
+    </div>
+    <a href="https://maps.google.com/?q=辻利茶舗京町本店" target="_blank" class="btn-map">地圖 🗺️</a>
+  </div>
+
+</div>
+
+<!-- 圖片放大燈箱 modal -->
+<div id="lightbox" class="modal" onclick="closeLightbox()">
+  <img id="lightboxImg" src="" alt="放大地圖">
+</div>
+
+<script>
+  function openLightbox(src) {
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightbox').style.display = 'flex';
+  }
+  function closeLightbox() {
+    document.getElementById('lightboxImg').src = '';
+    document.getElementById('lightbox').style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
